@@ -1,0 +1,8 @@
+version: "2.3"
+services:
+  python:
+    image: tensorflow/tensorflow
+    volumes:
+      - .:/var/www/html/
+    tty: true
+    working_dir: /var/www/html
