@@ -7,3 +7,12 @@ services:
     tty: true
     working_dir: /var/www/html
 #    user: www-data
+  mysql:
+    image: mysql:latest
+    volumes:
+      - ./mysql:/var/lib/mysql:delegated
+      - ./config/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+    ports:
+      - "3306:3306"
+    env_file:
+      - ./config/mysql/mysql.env
