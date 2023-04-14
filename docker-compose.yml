@@ -4,19 +4,27 @@ services:
 #    image: tensorflow/tensorflow
     build: build/python
     container_name: first_ai_python
+    depends_on:
+      - mysql
     volumes:
       - ./code:/var/www/html/
-      - ./mysql/logs:/var/www/logs
+      - logs:/var/www/logs
     tty: true
     working_dir: /var/www/html
 #    user: www-data
+
   mysql:
-    image: mysql:latest
+    image: mysql:8.0
     container_name: first_ai_mysql
     volumes:
-      - ./mysql:/var/lib/mysql:delegated
+      - logs:/var/lib/logs:rw
       - ./config/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
     ports:
-      - "3306:3306"
+      - "3307:3306"
+    expose:
+      - 3306
     env_file:
       - ./config/mysql/mysql.env
+
+volumes:
+  logs:
