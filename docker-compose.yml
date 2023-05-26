@@ -11,6 +11,8 @@ services:
       - logs:/var/www/html/var/mysql/logs
     tty: true
     working_dir: /var/www/html
+    env_file:
+      - ./config/python/my.env
 #    user: www-data
 
   mysql:

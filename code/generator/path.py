@@ -12,6 +12,7 @@ class PathHandler:
         self.archive_folder = os.path.join(self.full_path, 'archive')
         self.dumps = os.path.join(self.root, 'var/mysql/dumps/')
         self.log = os.path.join(self.root, 'var/log')
+        self.tmp = os.path.join(self.root, 'var/tmp')
 
         for folder in vars(self).values():
             if not os.path.exists(folder):

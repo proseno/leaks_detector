@@ -20,6 +20,8 @@ def main():
         Faker(),
         path.PathHandler()
     )
+    generator.generate_positive_case(1000)
+    generator.generate_negative_case(1000)
     generator.convert_to_csv()
 
 
@@ -75,7 +77,9 @@ class Generator:
         negative_files = self.merge_array(self.path_handler.train_negative, 0)
         data = positive_files + negative_files
 
-        with open(os.path.join(self.path_handler.train_merged, 'merged_logs.csv'), 'w') as csvfile:
+        random.shuffle(data)
+        now = datetime.now().strftime("%Y_%m_%d")
+        with open(os.path.join(self.path_handler.train_merged, 'merged_logs' + now + '.csv'), 'w') as csvfile:
             csv_writer = csv.writer(csvfile)
             csv_writer.writerow(['target', 'text'])
             for row in data:
@@ -92,4 +96,4 @@ class Generator:
         return result
 
 
-# main()
+main()
