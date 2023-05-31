@@ -20,8 +20,8 @@ def main():
         Faker(),
         path.PathHandler()
     )
-    generator.generate_positive_case(1000)
-    generator.generate_negative_case(1000)
+    generator.generate_positive_case(200)
+    generator.generate_negative_case(200)
     generator.convert_to_csv()
 
 
@@ -40,7 +40,7 @@ class Generator:
 
     def generate_positive_case(self, count: int):
         for i in range(count):
-            database_name = self.faker.word()
+            database_name = self.faker.word() + '_' + datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
             self.connection.create_database(database_name)
 
             last_line = self.logs_manager.get_line_count('/var/www/html/var/mysql/logs/mysql.log')
@@ -48,8 +48,7 @@ class Generator:
             # TODO remove or archive dump
             self.connection.create_dump(database_name, self.path_handler.dumps)
 
-            now = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
-            self.logs_manager.create_train_log_from_line(last_line, 'positive/' + database_name + '_' + now + '.log')
+            self.logs_manager.create_train_log_from_line(last_line, 'positive/' + database_name + '.log')
             self.connection.drop_database(database_name)
 
         self.connection.disconnect()
@@ -79,7 +78,7 @@ class Generator:
 
         random.shuffle(data)
         now = datetime.now().strftime("%Y_%m_%d")
-        with open(os.path.join(self.path_handler.train_merged, 'merged_logs' + now + '.csv'), 'w') as csvfile:
+        with open(os.path.join(self.path_handler.train_merged, 'merged_logs' + '.csv'), 'w') as csvfile:
             csv_writer = csv.writer(csvfile)
             csv_writer.writerow(['target', 'text'])
             for row in data:

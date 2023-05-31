@@ -5,3 +5,5 @@ mysql-connector-python==8.0.32
 Faker==18.7.0
 matplotlib==3.7.1
 nltk==3.8.1
+ann-visualizer==2.5
+graphviz==0.20.1

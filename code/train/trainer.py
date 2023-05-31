@@ -1,3 +1,5 @@
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 import pandas as pd
 from collections import Counter
 from tensorflow.keras import layers
@@ -6,6 +8,7 @@ import tensorflow as tf
 from cleaner import Cleaner
 from tokenizer import LogTokenizer
 from tensorflow.keras.preprocessing.text import Tokenizer
+
 
 
 def main():
@@ -93,7 +96,7 @@ class LogModel:
 
         loss = keras.losses.BinaryCrossentropy(from_logits=False)
         optim = keras.optimizers.Adam(lr=0.001)
-        metrics = ["accuracy"]
+        metrics = ["accuracy", tf.keras.metrics.Recall(), tf.keras.metrics.Precision()]
 
         model.compile(loss=loss, optimizer=optim, metrics=metrics)
 
@@ -104,3 +107,6 @@ class LogModel:
         model.save('/var/www/html/var/model')
 
         return log_tokenizer, model
+#
+#
+# main()

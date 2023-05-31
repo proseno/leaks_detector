@@ -17,6 +17,7 @@ services:
 
   mysql:
     image: mysql:8.0
+#    build: build/mysql
     container_name: first_ai_mysql
     volumes:
       - logs:/var/lib/logs:rw

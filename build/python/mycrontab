@@ -1,0 +1,5 @@
+
+# must be ended with a new line "LF" (Unix) and not "CRLF" (Windows)
+* * * * * /usr/bin/env python3 /var/www/html/main.py >> /var/www/html/var/cron.log 2>&1
+# An empty line is required at the end of this file for a valid cron file.
+

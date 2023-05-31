@@ -8,6 +8,8 @@ class LogTokenizer:
     def __init__(self, num_words=0):
         self.tokenizer = None
         self.num_words = num_words
+        if os.path.exists('/var/www/html/var/model/tokenizer/') is False:
+            os.makedirs('/var/www/html/var/model/tokenizer')
         self.tokenizer_path = '/var/www/html/var/model/tokenizer/tokenizer.pickle'
 
     def fit(self, texts):

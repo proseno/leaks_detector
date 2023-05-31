@@ -17,14 +17,14 @@ class Log:
         self.state_path = os.path.join(self.paths.tmp, 'state.json')
         self.md5 = None
         self.file_size = None
-        self.average_bytes_per_line = None
+        self.lines_count = None
 
     def get_data(self, skip_init_read=True) -> list:
         self.load_state()
-        if self.md5 is None or self.file_size is None or self.average_bytes_per_line is None:
+        if self.md5 is None or self.file_size is None or self.lines_count is None:
             result = self.read_new()
             if skip_init_read:
-                return []
+                result = []
         else:
             result = self.read_known()
 
@@ -42,7 +42,7 @@ class Log:
             result = log_file.readlines()
         self.md5 = hashlib.md5(open(self.log_path, 'rb').read()).hexdigest()
         self.file_size = os.path.getsize(self.log_path)
-        self.average_bytes_per_line = math.floor(self.file_size / len(result))
+        self.lines_count = len(result)
 
         return result
 
@@ -51,11 +51,8 @@ class Log:
         new_md5 = hashlib.md5(open(self.log_path, 'rb').read()).hexdigest()
         if new_md5 != self.md5:
             new_size = os.path.getsize(self.log_path)
-            lines = math.floor(new_size / self.average_bytes_per_line)
-            old_lines = math.floor(self.file_size / self.average_bytes_per_line)
 
-            lines_to_select = lines - old_lines
-            if lines_to_select < 0:
+            if self.lines_count <= 0:
                 return self.read_new()
             # TODO implement tail
             # f = subprocess.Popen(['tail', '-F', self.log_path, '-n', str(lines_to_select)], stdout=subprocess.PIPE,
@@ -64,11 +61,11 @@ class Log:
 
             with open(self.log_path, "r") as log_file:
                 log_lines = log_file.readlines()
-                result = log_lines[lines - lines_to_select:]
+                result = log_lines[self.lines_count:]
 
             self.file_size = new_size
             self.md5 = new_md5
-
+            self.lines_count = len(log_lines)
         return result
 
     @staticmethod
@@ -80,7 +77,7 @@ class Log:
             data = {
                 'file_size': self.file_size,
                 'md5': self.md5,
-                'average_bytes_per_line': self.average_bytes_per_line
+                'lines_count': self.lines_count
             }
             json.dump(data, jsonfile)
 
@@ -90,6 +87,6 @@ class Log:
                 data = json.load(jsonfile)
                 self.file_size = data['file_size']
                 self.md5 = data['md5']
-                self.average_bytes_per_line = data['average_bytes_per_line']
+                self.lines_count = data['lines_count']
         except FileNotFoundError:
             pass
